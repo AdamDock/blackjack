@@ -1,22 +1,17 @@
-import React, {useState, useEffect} from "react";
-import styles from '../index.module.css';
-import Decision from "../components/decision";
-import Betting from '../components/betting';
-import Menu from './menu';
+import Header from "./Header/Header";
+import CardsList from "./Cards/CardsList";
+import ChipsList from "./Chips/ChipsList";
+import ChoiceList from "./Choices/ChoiceList";
+const Table = () => {
+    return (<div className="flex flex-col border-2 border-white h-screen ">
+        <Header />
+        <CardsList />
+        <ChoiceList />
+        <ChipsList />
 
+        <div>
 
-export default function Table(){
-    const [score, setScore] = useState<number>(0);
-    const getWinTotal = (winTotalFromChild: number): void =>{
-        setScore(winTotalFromChild+ score);
-    }
-    return (
-        <>
-        <div className={styles.table}>
-            <Menu score={score}/>
-            <Decision getWinnings={getWinTotal}/>
-            <h1></h1>
-         </div>
-        </>
-    )
+        </div>
+    </div>);
 }
+export default Table;
