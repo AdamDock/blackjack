@@ -1,5 +1,8 @@
 ![image](https://github.com/AdamDock/blackjack/assets/39977252/60c345e0-f84a-4c20-8f77-92eaf38ed2cb)
 ![Screenshot 2024-01-08 at 9 37 59 AM](https://github.com/AdamDock/blackjack/assets/39977252/6f6e38ea-87a8-4c0d-a467-05bfe27d912e)
+![image](https://github.com/AdamDock/blackjack/assets/39977252/ee01dfb4-ae21-4a70-b0af-ee85c9c0a6a9)
+
+![Screenshot 2024-01-08 at 9 41 24 AM](https://github.com/AdamDock/blackjack/assets/39977252/f8f61476-01f2-4719-8ae0-c570253a7cee)
 
 Start with 5000 chips and try your luck in this casino game!
 Steps
