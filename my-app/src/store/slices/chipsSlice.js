@@ -12,7 +12,6 @@ const chipsSlice = createSlice({
             state.stack -= action.payload;
         },
         removeChips: (state) => {
-            state.stack -= state.pot;
             state.pot = 0;
         },
         resetChips: (state, action) => {

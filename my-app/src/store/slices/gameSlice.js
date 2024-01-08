@@ -7,8 +7,10 @@ const gameSlice = createSlice({
         dealStage: false,
         evaluateStage: false,
         splitActive: false,
-        playerScore: 0,
+        dealerTurnComplete: false,
+        gameScore: 0,
         textOutcome: '',
+        gameOver: false,
     },
     reducers: {
         setBetStage: (state, action) => {
@@ -21,7 +23,8 @@ const gameSlice = createSlice({
             state.evaluateStage = action.payload;
         },
         setScore: (state, action) => {
-            state.playerScore = action.payload;
+            state.gameScore += action.payload;
+            console.log("gamescore: ", state.gameScore);
         },
         setSplitActive: (state, action) => {
             state.splitActive = action.payload;
@@ -29,9 +32,15 @@ const gameSlice = createSlice({
         setTextOutcome: (state, action) => {
             state.textOutcome = action.payload;
         },
+        setDealerTurnComplete: (state, action) => {
+            state.dealerTurnComplete = action.payload;
+        },
+        setGameOver: (state, action) => {
+            state.gameOver = action.payload;
+        },  
         
     },
 });
 
-export const { setBetStage, setDealStage, setEvaluateStage, setScore, setSplitActive, setTextOutcome } = gameSlice.actions;
+export const { setGameOver, setDealerTurnComplete, setBetStage, setDealStage, setEvaluateStage, setScore, setSplitActive, setTextOutcome } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

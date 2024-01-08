@@ -5,7 +5,7 @@ const DealerHand = ()=>{
     const dispatch = useDispatch();
     const {hand, dealerScore} = useSelector((state: any) => state.dealer);
     const {betStage, dealStage } = useSelector((state: any) => state.game);
-
+   
     return (
         <>
         <div>

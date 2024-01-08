@@ -7,7 +7,6 @@ const PlayerHand = ()=>{
     const {hand, hand2, score} = useSelector((state: any) => state.player);
     const {betStage} = useSelector((state: any) => state.game);
     const {splitActive} = useSelector((state: any) => state.game);
-    console.log(hand);
 
     return (
         <div>

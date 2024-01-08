@@ -5,6 +5,7 @@ import { addChips, resetChips } from "../../store/index";
 
 const ChipsList = () => {
   const dispatch = useDispatch();
+  const { bet } = useSelector((state: any) => state.player);
   const {stack, pot}  = useSelector((state: any) => state.chips);
 
 const handleResetClick = () => {

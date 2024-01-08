@@ -2,8 +2,8 @@ import Choice from "./Choice";
 import { useCallback } from "react";
 import Button from "../ReusableForms/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { playerDealCard, setBetStage, setDealStage, dealerDealCard, setEvaluateStage, doubleChips, setSplitActive, playerSplit, setDealerScore, setTextOutcome, setScore, removeChips, winChips, playerDealCard2 } from "../../store";
-import { useEffect, useRef } from "react";
+import { playerDealCard, setPlayerBet, setBetStage, resetDealerHand, resetPlayerHand, setDealStage, dealerDealCard, setEvaluateStage, doubleChips, setSplitActive, playerSplit, setDealerScore, setTextOutcome, setScore, removeChips, winChips, playerDealCard2, setDealerTurnComplete, setGameOver } from "../../store";
+import { useEffect } from "react";
 
 // Card.ts
 class Card {
@@ -85,16 +85,14 @@ const deck = new Deck();
 
 
 const ChoiceList = ()=>{
+
     const dispatch = useDispatch();
-    const {betStage, dealStage, evaluateStage, splitActive} = useSelector((state: any) => state.game);
-    const {score, score2} = useSelector((state: any) => state.player);
+    const {betStage, dealStage, evaluateStage, splitActive, dealerTurnComplete, gameOver, gameScore} = useSelector((state: any) => state.game);
+    const {score, score2, bet, hand} = useSelector((state: any) => state.player);
     const {dealerScore} = useSelector((state: any) => state.dealer);
     const {pot, stack} = useSelector((state: any) => state.chips);
-    const {hand} = useSelector((state: any) => state.player);
-
- const isFirstRender = useRef(true);
- const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
      const handleDealClick = () => {
+      dispatch(setPlayerBet(pot));
       if(betStage){
         deck.shuffle();
         const card = deck.dealCard();
@@ -130,6 +128,10 @@ const ChoiceList = ()=>{
 
 
       };
+      if(score > 21){
+        dispatch(setEvaluateStage(true));
+        dispatch(setDealStage(false));
+      }
       const handleDoubleClick = () => {
         if(!dealStage || score > 21 || stack < pot || !(hand.length < 3) ){
           return;
@@ -145,25 +147,73 @@ const ChoiceList = ()=>{
         dispatch(setEvaluateStage(true));
       }
       const evaluateWinner = () => {
-        setEvaluateStage(false);
+        dispatch(setGameOver(true));
         if (score > 21) {
           dispatch(setTextOutcome('Player Bust!'));
           dispatch(removeChips());
+
         } else if (dealerScore > 21) {
           dispatch(setTextOutcome('Dealer Bust!'));
           dispatch(winChips());
-        } else if (score === dealerScore) {
+          dispatch(setScore(bet));
+
+          } else if (score === dealerScore) {
           dispatch(setTextOutcome('Push. Dealer Wins!'));
           dispatch(removeChips());
+
         } else if (score > dealerScore) {
           dispatch(setTextOutcome('Player Wins!'));
           dispatch(winChips());
+          dispatch(setScore(bet));
         } else {
           dispatch(setTextOutcome('Dealer Wins!'));
           dispatch(removeChips());
+
         }
       };
-    
+      const dealerHit = () => {
+        if (dealerScore < 17) {
+          const card = deck.dealCard();
+          dispatch(dealerDealCard(card));
+        } else if (dealerScore >= 17) {
+          dispatch(setDealerTurnComplete(true));
+        }
+      };
+      const resetGame = () => { 
+        dispatch(setGameOver(false));
+        dispatch(setEvaluateStage(false));
+        dispatch(setBetStage(true));
+        dispatch(setDealStage(false));
+        dispatch(setSplitActive(false));
+        dispatch(setDealerTurnComplete(false));
+        dispatch(setTextOutcome(''));
+        dispatch(resetDealerHand());
+        dispatch(resetPlayerHand());
+        deck.resetDeck();
+      };
+      useEffect(() => {
+        if(evaluateStage){
+          setTimeout(() => {
+          dealerHit();
+          }, 1000);
+
+        }
+      },[dealerScore, evaluateStage]);
+      useEffect(() => {
+        
+        if(evaluateStage && dealerTurnComplete){
+          evaluateWinner();
+        }
+
+  },[dealerTurnComplete]);
+  useEffect(() => {
+    if(evaluateStage && dealerTurnComplete && gameOver)
+    setTimeout(() => {
+      resetGame();
+    }, 5000);
+
+
+  }, [gameOver]);
       
 
   return (

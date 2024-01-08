@@ -24,10 +24,17 @@ const playerSlice = createSlice({
         },
         setPlayerBet: (state, action) => {
             state.bet = action.payload;
+            console.log("player bet locked in: ", state.bet);
         },
+        resetPlayerHand: (state) => {   
+            state.hand = [];
+            state.hand2 = [];
+            state.score = 0;
+            state.score2 = 0;
+        }
         
     },
 });
 
-export const { playerDealCard, playerDealCard2, setPlayerScore, setPlayerBet, playerSplit } = playerSlice.actions;
+export const { resetPlayerHand, playerDealCard, playerDealCard2, setPlayerScore, setPlayerBet, playerSplit } = playerSlice.actions;
 export const playerReducer = playerSlice.reducer;

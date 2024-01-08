@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
 const Header = () => {
-  const { playerScore, textOutcome } = useSelector((state: any) => state.game);
+  const { gameScore, textOutcome } = useSelector((state: any) => state.game);
   const score = 0;
   return (
     <div className="flex flex-row justify-between">
       <div className="flex flex-row">
         <h2>
-          Score: {playerScore}
+          Score: {gameScore}
         </h2>
        
 
