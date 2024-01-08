@@ -1,5 +1,6 @@
 ![image](https://github.com/AdamDock/blackjack/assets/39977252/60c345e0-f84a-4c20-8f77-92eaf38ed2cb)
-Are you ready to play blackjack?
+![Screenshot 2024-01-08 at 9 37 59 AM](https://github.com/AdamDock/blackjack/assets/39977252/6f6e38ea-87a8-4c0d-a467-05bfe27d912e)
+
 Start with 5000 chips and try your luck in this casino game!
 Steps
 1.) Place a bet by clicking on the chips. Click reset if you need to restart.
