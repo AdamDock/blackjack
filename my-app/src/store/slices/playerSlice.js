@@ -8,6 +8,7 @@ const playerSlice = createSlice({
         score: 0,
         score2: 0,
         bet: 0,
+        bet2: 0,
     },
     reducers: {
         playerDealCard: (state, action) => {
@@ -21,10 +22,16 @@ const playerSlice = createSlice({
         playerSplit: (state) => {
             state.hand2.push(state.hand.pop());
             state.score -= state.hand2[0].value;
+            state.score2 += state.hand2[0].value;
+            state.bet2 = state.bet;
         },
         setPlayerBet: (state, action) => {
             state.bet = action.payload;
             console.log("player bet locked in: ", state.bet);
+        },
+        setPlayerBet2: (state, action) => {
+            state.bet2 = action.payload;
+            console.log("player bet2 locked in: ", state.bet2);
         },
         resetPlayerHand: (state) => {   
             state.hand = [];
@@ -36,5 +43,5 @@ const playerSlice = createSlice({
     },
 });
 
-export const { resetPlayerHand, playerDealCard, playerDealCard2, setPlayerScore, setPlayerBet, playerSplit } = playerSlice.actions;
+export const { setPlayerBet2, resetPlayerHand, playerDealCard, playerDealCard2, setPlayerScore, setPlayerBet, playerSplit } = playerSlice.actions;
 export const playerReducer = playerSlice.reducer;

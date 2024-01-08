@@ -5,8 +5,9 @@ import { addChips, resetChips } from "../../store/index";
 
 const ChipsList = () => {
   const dispatch = useDispatch();
+  const { splitActive } = useSelector((state: any) => state.game);
   const { bet } = useSelector((state: any) => state.player);
-  const {stack, pot}  = useSelector((state: any) => state.chips);
+  const {stack, pot, pot2}  = useSelector((state: any) => state.chips);
 
 const handleResetClick = () => {
     dispatch(resetChips(0));
@@ -33,7 +34,7 @@ const handleResetClick = () => {
         <Chip onClick={handleChipClick} amount={stack} color={"yellow"} />
         <div className='flex flex-col'>
           <div>
-            <h2>Pot: {pot}</h2>
+            {!splitActive?<h2>Pot: {pot}</h2>:<><h2>Pot: {pot}</h2><h2>Pot2: {pot2}</h2></>}
           </div>
           <div>
             <h2>Stack: {stack}</h2>

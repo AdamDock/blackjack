@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 const PlayerHand = ()=>{
     const dispatch = useDispatch();
-    const {hand, hand2, score} = useSelector((state: any) => state.player);
+    const {hand, hand2, score, score2} = useSelector((state: any) => state.player);
     const {betStage} = useSelector((state: any) => state.game);
     const {splitActive} = useSelector((state: any) => state.game);
 
@@ -34,7 +34,7 @@ const PlayerHand = ()=>{
 
       </div>
       <div>
-        <h2>PlayerScore: {score} </h2>
+        <h2>Hand 1 Score: {score} </h2>
       </div>
       
       <div className="flex">
@@ -44,7 +44,7 @@ const PlayerHand = ()=>{
 
       </div>
       <div>
-        <h2>PlayerScore: {score} </h2>
+        <h2>Hand 2 Score: {score2} </h2>
         </div>
     </div>
 

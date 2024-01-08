@@ -2,7 +2,7 @@ import Choice from "./Choice";
 import { useCallback } from "react";
 import Button from "../ReusableForms/Button";
 import { useDispatch, useSelector } from "react-redux";
-import { playerDealCard, setPlayerBet, setBetStage, resetDealerHand, resetPlayerHand, setDealStage, dealerDealCard, setEvaluateStage, doubleChips, setSplitActive, playerSplit, setDealerScore, setTextOutcome, setScore, removeChips, winChips, playerDealCard2, setDealerTurnComplete, setGameOver } from "../../store";
+import {  removeChips2, winChips2, setTextOutcome2, doubleChips2, playerDealCard, setPlayerBet, setBetStage, resetDealerHand, resetPlayerHand, setDealStage, dealerDealCard, setEvaluateStage, doubleChips, setSplitActive, playerSplit, setDealerScore, setTextOutcome, setScore, removeChips, winChips, playerDealCard2, setDealerTurnComplete, setGameOver, setHandsLost, setHandsWon, splitChips, setHand1Dealt } from "../../store";
 import { useEffect } from "react";
 
 // Card.ts
@@ -87,13 +87,14 @@ const deck = new Deck();
 const ChoiceList = ()=>{
 
     const dispatch = useDispatch();
-    const {betStage, dealStage, evaluateStage, splitActive, dealerTurnComplete, gameOver, gameScore} = useSelector((state: any) => state.game);
+    const {betStage, dealStage, evaluateStage, splitActive, dealerTurnComplete, gameOver, gameScore, hand1dealt} = useSelector((state: any) => state.game);
     const {score, score2, bet, hand} = useSelector((state: any) => state.player);
     const {dealerScore} = useSelector((state: any) => state.dealer);
-    const {pot, stack} = useSelector((state: any) => state.chips);
+    const {pot, pot2, stack} = useSelector((state: any) => state.chips);
      const handleDealClick = () => {
-      dispatch(setPlayerBet(pot));
-      if(betStage){
+      
+      if(betStage && pot > 0){
+        dispatch(setPlayerBet(pot));
         deck.shuffle();
         const card = deck.dealCard();
         const card2 = deck.dealCard();
@@ -109,67 +110,142 @@ const ChoiceList = ()=>{
       }
     };
       const handleHitClick = () => {
-        if(!dealStage || score > 21){
+        if(!dealStage || (!splitActive && score> 21)){
           return;
         }
-        
-
-        const card = deck.dealCard();
-        dispatch(playerDealCard(card));
+        if(score > 21){
+          dispatch(setHand1Dealt(true));
+        }
+        if(!splitActive){
+          const card = deck.dealCard();
+          dispatch(playerDealCard(card));
+        } else if(splitActive && !hand1dealt){
+          const card = deck.dealCard();
+          dispatch(playerDealCard(card));
+        } else if(splitActive && hand1dealt){
+          const card = deck.dealCard();
+          dispatch(playerDealCard2(card));
+        }
       };
       const handleStandClick = () => {
+        console.log(splitActive)
+        if(!splitActive && !betStage){
+          console.log("stand");
+          dispatch(setDealStage(false));
+        dispatch(setEvaluateStage(true));
+      } else if(splitActive && !hand1dealt){
+        dispatch(setHand1Dealt(true));
+      } else if(splitActive && hand1dealt){
         dispatch(setDealStage(false));
         dispatch(setEvaluateStage(true));
+      }
       };
       const handleSplitClick = () => {
-        /*if(hand[0].rank===hand[1].rank){*/
+        /*
+        if(hand[0].rank===hand[1].rank)*/
+        if(!splitActive){
           dispatch(setSplitActive(true));
           dispatch(playerSplit());
+          dispatch(playerDealCard(deck.dealCard()));
+          dispatch(playerDealCard2(deck.dealCard()));
+          dispatch(splitChips());
+
+        }
 
 
       };
-      if(score > 21){
+      if(score > 21 && !splitActive){
+        dispatch(setEvaluateStage(true));
+        dispatch(setDealStage(false));
+      } else if (score2 > 21 && splitActive){
         dispatch(setEvaluateStage(true));
         dispatch(setDealStage(false));
       }
       const handleDoubleClick = () => {
-        if(!dealStage || score > 21 || stack < pot || !(hand.length < 3) ){
+        if(!dealStage || (!splitActive && score > 21) || stack < pot || (!(hand.length < 3)&& !splitActive) || score2 > 21 ){
           return;
         }
+        if(!splitActive){
         const card = deck.dealCard();
         dispatch(playerDealCard(card));
         dispatch(setDealStage(false));
         dispatch(setEvaluateStage(true));
         dispatch(doubleChips());
+        } else if(splitActive && !hand1dealt){
+          const card = deck.dealCard();
+          dispatch(playerDealCard(card));
+          dispatch(setHand1Dealt(true));
+          dispatch(doubleChips());
+        } else if(splitActive && hand1dealt){
+          const card = deck.dealCard();
+          dispatch(playerDealCard2(card));
+          dispatch(setDealStage(false));
+         dispatch(setEvaluateStage(true));
+          dispatch(doubleChips2());
+        }
 
       };
-      if(score > 21){
-        dispatch(setEvaluateStage(true));
-      }
+     
       const evaluateWinner = () => {
-        dispatch(setGameOver(true));
         if (score > 21) {
           dispatch(setTextOutcome('Player Bust!'));
           dispatch(removeChips());
+          dispatch(setHandsLost());
 
         } else if (dealerScore > 21) {
           dispatch(setTextOutcome('Dealer Bust!'));
           dispatch(winChips());
           dispatch(setScore(bet));
+          dispatch(setHandsWon());
 
           } else if (score === dealerScore) {
           dispatch(setTextOutcome('Push. Dealer Wins!'));
           dispatch(removeChips());
+          dispatch(setHandsLost());
 
         } else if (score > dealerScore) {
           dispatch(setTextOutcome('Player Wins!'));
           dispatch(winChips());
           dispatch(setScore(bet));
+          dispatch(setHandsWon());
         } else {
           dispatch(setTextOutcome('Dealer Wins!'));
           dispatch(removeChips());
+          dispatch(setHandsLost());
 
         }
+        if(splitActive){
+          if (score2 > 21) {
+            dispatch(setTextOutcome2('Hand 2 Bust!'));
+            dispatch(removeChips2());
+            dispatch(setHandsLost());
+          }
+          else if (dealerScore > 21) {
+            dispatch(setTextOutcome2('Dealer Bust!'));
+            dispatch(winChips2());
+            dispatch(setScore(pot2));
+            dispatch(setHandsWon());
+
+          } else if (score2 === dealerScore) {
+            dispatch(setTextOutcome2('Push. Dealer Wins!'));
+            dispatch(removeChips2());
+            dispatch(setHandsLost());
+
+          } else if (score2 > dealerScore) {
+            dispatch(setTextOutcome2('Player Wins!'));
+            dispatch(winChips2());
+            dispatch(setScore(pot2));
+            dispatch(setHandsWon());
+          } else {
+            dispatch(setTextOutcome2('Dealer Wins!'));
+            dispatch(removeChips2());
+            dispatch(setHandsLost());
+
+          }
+        }
+
+        dispatch(setGameOver(true));
+
       };
       const dealerHit = () => {
         if (dealerScore < 17) {
@@ -187,8 +263,10 @@ const ChoiceList = ()=>{
         dispatch(setSplitActive(false));
         dispatch(setDealerTurnComplete(false));
         dispatch(setTextOutcome(''));
+        dispatch(setTextOutcome2(''));
         dispatch(resetDealerHand());
         dispatch(resetPlayerHand());
+        dispatch(setHand1Dealt(false));
         deck.resetDeck();
       };
       useEffect(() => {
@@ -222,16 +300,16 @@ const ChoiceList = ()=>{
         <Button className={!betStage? "opacity-0": ''} secondary rounded onClick={handleDealClick}>
           Deal
         </Button>
-        <Button className={evaluateStage || score> 21? "opacity-0":''} secondary rounded onClick={handleHitClick}>
+        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleHitClick}>
           Hit
         </Button>
-        <Button className={evaluateStage || score>21? "opacity-0":''} secondary rounded onClick={handleStandClick}>
+        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleStandClick}>
           Stand
         </Button>
-        <Button className={evaluateStage ||score>21? "opacity-0":''} secondary rounded onClick={handleDoubleClick}>
+        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleDoubleClick}>
           Double
         </Button>
-        <Button className={evaluateStage|| score > 21? "opacity-0":''} secondary rounded onClick={handleSplitClick}>
+        <Button className={evaluateStage|| (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleSplitClick}>
           Split
         </Button>
 
