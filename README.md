@@ -1,3 +1,4 @@
+![image](https://github.com/AdamDock/blackjack/assets/39977252/60c345e0-f84a-4c20-8f77-92eaf38ed2cb)
 Are you ready to play blackjack?
 Start with 5000 chips and try your luck in this casino game!
 Steps
