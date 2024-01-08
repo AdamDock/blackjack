@@ -4,6 +4,12 @@
 
 ![Screenshot 2024-01-08 at 9 41 24 AM](https://github.com/AdamDock/blackjack/assets/39977252/f8f61476-01f2-4719-8ae0-c570253a7cee)
 
+
+
+https://github.com/AdamDock/blackjack/assets/39977252/c76f8e8a-9d74-4acd-ac61-3308e249e69c
+
+
+
 Start with 5000 chips and try your luck in this casino game!
 Steps
 1.) Place a bet by clicking on the chips. Click reset if you need to restart.
