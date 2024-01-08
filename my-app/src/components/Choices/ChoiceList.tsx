@@ -141,9 +141,7 @@ const ChoiceList = ()=>{
       }
       };
       const handleSplitClick = () => {
-        /*
-        if(hand[0].rank===hand[1].rank)*/
-        if(!splitActive){
+        if(hand[0].rank===hand[1].rank){
           dispatch(setSplitActive(true));
           dispatch(playerSplit());
           dispatch(playerDealCard(deck.dealCard()));
@@ -297,19 +295,19 @@ const ChoiceList = ()=>{
   return (
       <>
       <div className="flex items-center">
-        <Button className={!betStage? "opacity-0": ''} secondary rounded onClick={handleDealClick}>
+        <Button className={!betStage? "opacity-0 cursor-default": ''} secondary rounded onClick={handleDealClick}>
           Deal
         </Button>
-        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleHitClick}>
+        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0 cursor-default":''} secondary rounded onClick={handleHitClick}>
           Hit
         </Button>
-        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleStandClick}>
+        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0 cursor-default":''} secondary rounded onClick={handleStandClick}>
           Stand
         </Button>
-        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleDoubleClick}>
+        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0 cursor-default":''} secondary rounded onClick={handleDoubleClick}>
           Double
         </Button>
-        <Button className={evaluateStage|| (!splitActive && score> 21)? "opacity-0":''} secondary rounded onClick={handleSplitClick}>
+        <Button className={evaluateStage|| (!splitActive && score> 21) ||(splitActive)? "opacity-0 cursor-default":''} secondary rounded onClick={handleSplitClick}>
           Split
         </Button>
 
