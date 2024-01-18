@@ -10,7 +10,7 @@ const ChipsList = () => {
   const {stack, pot, pot2}  = useSelector((state: any) => state.chips);
 
 const handleResetClick = () => {
-    dispatch(resetChips(0));
+    dispatch(resetChips("hand1"));
   }
   
   const handleChipClick = (amount: number) => {

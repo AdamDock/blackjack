@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 const DealerHand = ()=>{
     const dispatch = useDispatch();
     const {hand, dealerScore} = useSelector((state: any) => state.dealer);
-    const {betStage, dealStage } = useSelector((state: any) => state.game);
+    const {betStage, dealStage, isBlackjack } = useSelector((state: any) => state.game);
    
     return (
         <>
@@ -17,7 +17,7 @@ const DealerHand = ()=>{
                 <Card code={"back"}/>
                 <h1>DealerScore:</h1>
              </>
-             : dealStage ?
+             : dealStage && !isBlackjack?
              <>
                     <Card code={"back"}/>
                     <Card code={`${hand[1].code}`}/>

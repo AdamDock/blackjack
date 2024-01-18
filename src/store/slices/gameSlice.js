@@ -16,10 +16,15 @@ const gameSlice = createSlice({
         hands: 0,
         handsWon: 0,
         handsLost: 0,
+        handsPushed: 0,
+        isBlackjack: false,
     },
     reducers: {
         setBetStage: (state, action) => {
             state.betStage = action.payload;
+        },
+        setIsBlackjack: (state, action) => {
+            state.isBlackjack = action.payload;
         },
         setDealStage: (state, action) => {
             state.dealStage = action.payload;
@@ -36,6 +41,11 @@ const gameSlice = createSlice({
             state.hand2deal = action.payload;
         },
         setTextOutcome: (state, action) => {
+            if(action.payload[0] === "hand1"){
+                state.textOutcome = action.payload[1];
+            } else if(action.payload[0] === "hand2"){
+                state.textOutcome2 = action.payload[1];
+            }
             state.textOutcome = action.payload;
         },
         setDealerTurnComplete: (state, action) => {
@@ -52,15 +62,18 @@ const gameSlice = createSlice({
             state.handsLost++;
             state.hands++;
         },
+        setHandsPushed: (state) => {
+            state.handsPushed++;
+            state.hands++;
+        },
         setHand1Dealt: (state, action) => {
             state.hand1dealt = action.payload;
         },
         setTextOutcome2: (state, action) => {
             state.textOutcome2 = action.payload;
         },
-        
     },
 });
 
-export const { setTextOutcome2, setHand1Dealt, setHandsLost, setHandsWon, setGameOver, setDealerTurnComplete, setBetStage, setDealStage, setEvaluateStage, setScore, setSplitActive, setTextOutcome } = gameSlice.actions;
+export const { setHandsPushed, setIsBlackjack, setTextOutcome2, setHand1Dealt, setHandsLost, setHandsWon, setGameOver, setDealerTurnComplete, setBetStage, setDealStage, setEvaluateStage, setScore, setSplitActive, setTextOutcome } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

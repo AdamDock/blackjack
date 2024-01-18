@@ -9,7 +9,10 @@ const dealerSlice = createSlice({
     reducers: {
         dealerDealCard: (state, action) => {
             state.hand.push(action.payload);
-            state.dealerScore += action.payload.value;
+        },
+        setDealerScore: (state, action) => {
+            state.dealerScore = action.payload;
+            console.log("dealer score: ", state.dealerScore);
         },
         resetDealerHand: (state) => {
             state.hand = [];

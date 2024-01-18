@@ -12,12 +12,19 @@ const playerSlice = createSlice({
     },
     reducers: {
         playerDealCard: (state, action) => {
-            state.hand.push(action.payload);
-            state.score += action.payload.value;
+            state.hand = [...state.hand, action.payload];
+           console.log("player hand: ", state.hand);
+        },
+        setPlayerScore: (state, action) => {
+            state.score = action.payload;
+            console.log("player score: ", state.score);
+        },
+        setPlayerScore2: (state, action) => {
+            state.score2 = action.payload;
+            console.log("player score2: ", state.score2);
         },
         playerDealCard2: (state, action) => {
-            state.hand2.push(action.payload);
-            state.score2 += action.payload.value;
+            state.hand2 = [...state.hand2, action.payload];
         },
         playerSplit: (state) => {
             state.hand2.push(state.hand.pop());
@@ -43,5 +50,5 @@ const playerSlice = createSlice({
     },
 });
 
-export const { setPlayerBet2, resetPlayerHand, playerDealCard, playerDealCard2, setPlayerScore, setPlayerBet, playerSplit } = playerSlice.actions;
+export const { setPlayerScore2, setPlayerBet2, resetPlayerHand, playerDealCard, playerDealCard2, setPlayerScore, setPlayerBet, playerSplit } = playerSlice.actions;
 export const playerReducer = playerSlice.reducer;

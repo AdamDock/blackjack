@@ -15,7 +15,7 @@ import Button from '../components/Button';
 function ModalPage() {*/
   
 const Table = () => {
-    const { gameOver, gameScore, hands, handsWon, handsLost } = useSelector((state: any) => state.game);
+    const { gameOver, gameScore, hands, handsWon, handsLost, handsPushed } = useSelector((state: any) => state.game);
     const { pot, stack } = useSelector((state: any) => state.chips);
     const [showModal, setShowModal] = useState(false);
     const [showModal2, setShowModal2] = useState(false);
@@ -102,6 +102,7 @@ const Table = () => {
             <p>Total Hands played: {hands} </p>
             <p>Total Hands won: {handsWon} </p>
             <p>Total Hands lost: {handsLost}</p>
+            <p>Total Hands Pushed: {handsPushed}</p>
 
         </div>
       

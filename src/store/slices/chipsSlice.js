@@ -12,23 +12,37 @@ const chipsSlice = createSlice({
             state.pot += action.payload;
             state.stack -= action.payload;
         },
-        removeChips: (state) => {
-            state.pot = 0;
+        removeChips: (state, action) => {
+            if(action.payload === "hand1"){
+                state.pot =0;
+            } else if(action.payload === "hand2"){
+                state.pot2 =0;
+            }
         },
-        removeChips2: (state) => {
-            state.pot2 = 0;
-        },
+       
         resetChips: (state, action) => {
-            state.stack += state.pot;
-            state.pot = 0;
+            if(action.payload === "hand1"){
+                state.stack += state.pot;
+                state.pot = 0;
+            } else if(action.payload === "hand2"){
+                state.stack += state.pot2;
+                state.pot2 = 0;
+            }
         },
-        winChips: (state) => {
-            state.stack += state.pot*2;
-            state.pot = 0;
-        },
-        winChips2: (state) => {
-            state.stack += state.pot2*2;
-            state.pot2 = 0;
+        winChips: (state, action) => {
+            if(action.payload === "hand1"){
+                state.stack += state.pot*2;
+                state.pot = 0;
+            } else if(action.payload === "hand2"){
+                state.stack += state.pot2*2;
+                state.pot2 = 0;
+            } else if(action.payload === 'hand1blackjack'){
+                state.stack += state.pot*2.5;
+                state.pot = 0;
+            } else if(action.payload === 'hand2blackjack'){
+                state.stack += state.pot2*2.5;
+                state.pot2 = 0;
+            }
         },
         doubleChips: (state) => {
             state.stack -= state.pot;

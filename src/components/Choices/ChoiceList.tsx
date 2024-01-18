@@ -2,8 +2,9 @@ import Choice from "./Choice";
 import { useCallback } from "react";
 import Button from "../ReusableForms/Button";
 import { useDispatch, useSelector } from "react-redux";
-import {  removeChips2, winChips2, setTextOutcome2, doubleChips2, playerDealCard, setPlayerBet, setBetStage, resetDealerHand, resetPlayerHand, setDealStage, dealerDealCard, setEvaluateStage, doubleChips, setSplitActive, playerSplit, setDealerScore, setTextOutcome, setScore, removeChips, winChips, playerDealCard2, setDealerTurnComplete, setGameOver, setHandsLost, setHandsWon, splitChips, setHand1Dealt } from "../../store";
+import {setPlayerScore2, resetChips, setHandsPushed, setPlayerScore, setTextOutcome2, doubleChips2, playerDealCard, setPlayerBet, setBetStage, resetDealerHand, resetPlayerHand, setDealStage, dealerDealCard, setEvaluateStage, doubleChips, setSplitActive, playerSplit, setDealerScore, setTextOutcome, setScore, removeChips, winChips, playerDealCard2, setDealerTurnComplete, setGameOver, setHandsLost, setHandsWon, splitChips, setHand1Dealt, setIsBlackjack } from "../../store";
 import { useEffect } from "react";
+import { text } from "stream/consumers";
 
 // Card.ts
 class Card {
@@ -62,6 +63,10 @@ class Deck {
       [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
     }
   }
+  blackjack(): void {
+    const blackjackCards = this.cards.filter((card) => card.value === 10 || card.value === 1);
+    this.cards = blackjackCards;
+  }
 
   dealCard(): Card | null {
     if (this.cards.length === 0) {
@@ -83,24 +88,112 @@ class Deck {
 // Create a new deck
 const deck = new Deck();
 
+const calculateScore = ((hand: any)=>{
+  let score = 0;
+  let aces = 0;
+  let blackjack = false;
+  hand.forEach((card: any) => {
+    if(card.rank === 'A'){
+      aces++;
+    }
+    score += card.value;
+  });
+  
+  if(aces > 0 && score + 10 <= 21){
+    score += 10;
+  }
+  if(hand.length === 2 && score === 21){
+    blackjack = true;
+  }
+  
+  return score;
+
+})
+
+
 
 const ChoiceList = ()=>{
 
     const dispatch = useDispatch();
-    const {betStage, dealStage, evaluateStage, splitActive, dealerTurnComplete, gameOver, gameScore, hand1dealt} = useSelector((state: any) => state.game);
-    const {score, score2, bet, hand} = useSelector((state: any) => state.player);
+    const {betStage, dealStage, evaluateStage, splitActive, dealerTurnComplete, gameOver, gameScore, hand1dealt, textOutcome, isBlackjack} = useSelector((state: any) => state.game);
+    const {score, score2, bet, hand, hand2} = useSelector((state: any) => state.player);
     const {dealerScore} = useSelector((state: any) => state.dealer);
+    const dealerHand = useSelector((state: any) => state.dealer.hand);
     const {pot, pot2, stack} = useSelector((state: any) => state.chips);
+    const checkBlackjack = ()=>{
+      console.log("check");
+      if(dealStage && !splitActive){
+        if(score === 21 && dealerScore === 21){
+          dispatch(setTextOutcome('Double blackjack! Push!'));
+          dispatch(resetChips("hand1"));
+          dispatch(setHandsPushed());
+          dispatch(setGameOver(true));
+          dispatch(setIsBlackjack(true));
+        } else if(score === 21) {
+          dispatch(setTextOutcome('Blackjack!'));
+          dispatch(winChips("hand1blackjack"));
+          dispatch(setScore(bet*1.5));
+          dispatch(setHandsWon());
+          dispatch(setGameOver(true));
+          dispatch(setIsBlackjack(true));
+        } else if(dealerScore === 21) {
+          dispatch(setTextOutcome('Dealer Blackjack!'));
+          dispatch(removeChips("hand1"));
+          dispatch(setHandsLost());
+          dispatch(setGameOver(true));
+          dispatch(setIsBlackjack(true));
+        }
+      } else if(dealStage && splitActive){
+        if(score === 21 && dealerScore === 21){
+          dispatch(setTextOutcome('Double blackjack! Push!'));
+          dispatch(resetChips("hand1"));
+          dispatch(setHandsPushed());
+          dispatch(hand1dealt(true));
+        } else if(score === 21) {
+          dispatch(setTextOutcome('Blackjack!'));
+          dispatch(winChips("hand1blackjack"));
+          dispatch(setScore(bet*1.5));
+          dispatch(setHandsWon());
+          dispatch(setHand1Dealt(true));
+        } else if(dealerScore === 21) {
+          dispatch(setTextOutcome('Dealer Blackjack!'));
+          dispatch(removeChips("hand1"));
+          dispatch(setHandsLost());
+          dispatch(setHand1Dealt(true));
+          dispatch(setIsBlackjack(true));
+        }
+        if(score2 === 21 && dealerScore === 21){
+          dispatch(setTextOutcome2('Double blackjack! Push!'));
+          dispatch(resetChips("hand2"));
+          dispatch(setHandsPushed());
+          dispatch(setGameOver(true));
+          dispatch(setIsBlackjack(true));
+        } else if(score2 === 21) {
+          dispatch(setTextOutcome2('Blackjack!'));
+          dispatch(winChips("hand2blackjack"));
+          dispatch(setScore(pot2*1.5));
+          dispatch(setHandsWon());
+          dispatch(setGameOver(true));
+          dispatch(setIsBlackjack(true));
+        } else if(dealerScore === 21) {
+          dispatch(setTextOutcome2('Dealer Blackjack!'));
+          dispatch(removeChips("hand2"));
+          dispatch(setHandsLost());
+          dispatch(setGameOver(true));
+          dispatch(setIsBlackjack(true));
+        }
+      }
+    };
      const handleDealClick = () => {
       
       if(betStage && pot > 0){
         dispatch(setPlayerBet(pot));
         deck.shuffle();
+        console.log(deck);
         const card = deck.dealCard();
         const card2 = deck.dealCard();
         const card3 = deck.dealCard();
         const card4 = deck.dealCard();
-        console.log(card);
         dispatch(playerDealCard(card));
         dispatch(playerDealCard(card2));
         dispatch(dealerDealCard(card3));
@@ -141,7 +234,7 @@ const ChoiceList = ()=>{
       }
       };
       const handleSplitClick = () => {
-        if(hand[0].rank===hand[1].rank){
+        if(hand[0].rank===hand[1].rank && !splitActive && stack >= pot){
           dispatch(setSplitActive(true));
           dispatch(playerSplit());
           dispatch(playerDealCard(deck.dealCard()));
@@ -185,58 +278,59 @@ const ChoiceList = ()=>{
       };
      
       const evaluateWinner = () => {
+        
         if (score > 21) {
           dispatch(setTextOutcome('Player Bust!'));
-          dispatch(removeChips());
+          dispatch(removeChips("hand1"));
           dispatch(setHandsLost());
 
         } else if (dealerScore > 21) {
           dispatch(setTextOutcome('Dealer Bust!'));
-          dispatch(winChips());
+          dispatch(winChips("hand1"));
           dispatch(setScore(bet));
           dispatch(setHandsWon());
 
           } else if (score === dealerScore) {
-          dispatch(setTextOutcome('Push. Dealer Wins!'));
-          dispatch(removeChips());
-          dispatch(setHandsLost());
+          dispatch(setTextOutcome('Push!'));
+          dispatch(resetChips("hand1"));
+          dispatch(setHandsPushed());
 
         } else if (score > dealerScore) {
           dispatch(setTextOutcome('Player Wins!'));
-          dispatch(winChips());
+          dispatch(winChips("hand1"));
           dispatch(setScore(bet));
           dispatch(setHandsWon());
         } else {
           dispatch(setTextOutcome('Dealer Wins!'));
-          dispatch(removeChips());
+          dispatch(removeChips("hand1"));
           dispatch(setHandsLost());
 
         }
         if(splitActive){
           if (score2 > 21) {
-            dispatch(setTextOutcome2('Hand 2 Bust!'));
-            dispatch(removeChips2());
+            dispatch(setTextOutcome2('Player Hand 2 Bust!'));
+            dispatch(removeChips("hand2"));
             dispatch(setHandsLost());
           }
           else if (dealerScore > 21) {
             dispatch(setTextOutcome2('Dealer Bust!'));
-            dispatch(winChips2());
+            dispatch(winChips("hand2"));
             dispatch(setScore(pot2));
             dispatch(setHandsWon());
 
           } else if (score2 === dealerScore) {
-            dispatch(setTextOutcome2('Push. Dealer Wins!'));
-            dispatch(removeChips2());
-            dispatch(setHandsLost());
+            dispatch(setTextOutcome2('Push!'));
+            dispatch(resetChips("hand2"));
+            dispatch(setHandsPushed());
 
           } else if (score2 > dealerScore) {
             dispatch(setTextOutcome2('Player Wins!'));
-            dispatch(winChips2());
+            dispatch(winChips("hand2"));
             dispatch(setScore(pot2));
             dispatch(setHandsWon());
           } else {
             dispatch(setTextOutcome2('Dealer Wins!'));
-            dispatch(removeChips2());
+            dispatch(removeChips("hand2"));
             dispatch(setHandsLost());
 
           }
@@ -265,28 +359,48 @@ const ChoiceList = ()=>{
         dispatch(resetDealerHand());
         dispatch(resetPlayerHand());
         dispatch(setHand1Dealt(false));
+        dispatch(setIsBlackjack(false));
         deck.resetDeck();
       };
+      useEffect(() => {
+        const calculatedHand2Score = calculateScore(hand2);
+        dispatch(setPlayerScore2(calculatedHand2Score));
+      }, [hand2]);
+      useEffect(() => {
+        const calculatedDealerScore = calculateScore(dealerHand);
+        dispatch(setDealerScore(calculatedDealerScore));
+      }, [dealerHand]);
+      useEffect(() => {
+            const score = calculateScore(hand);
+            dispatch(setPlayerScore(score));
+            
+        
+      }, [hand]);
+      useEffect(() => {
+        if(hand.length === 2){
+          checkBlackjack();
+        }
+      }, [score]);
+      
       useEffect(() => {
         if(evaluateStage){
           setTimeout(() => {
           dealerHit();
-          }, 1000);
+          }, 2000);
 
         }
       },[dealerScore, evaluateStage]);
       useEffect(() => {
-        
-        if(evaluateStage && dealerTurnComplete){
-          evaluateWinner();
+        if(dealerTurnComplete){
+        evaluateWinner();
         }
-
   },[dealerTurnComplete]);
   useEffect(() => {
-    if(evaluateStage && dealerTurnComplete && gameOver)
+    if((evaluateStage && dealerTurnComplete && gameOver)|| isBlackjack){
     setTimeout(() => {
       resetGame();
     }, 5000);
+  }
 
 
   }, [gameOver]);
@@ -298,16 +412,16 @@ const ChoiceList = ()=>{
         <Button className={!betStage? "opacity-0 cursor-default": ''} secondary rounded onClick={handleDealClick}>
           Deal
         </Button>
-        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0 cursor-default":''} secondary rounded onClick={handleHitClick}>
+        <Button className={!dealStage || (!splitActive && score> 21) || isBlackjack? "opacity-0 cursor-default":''} secondary rounded onClick={handleHitClick}>
           Hit
         </Button>
-        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0 cursor-default":''} secondary rounded onClick={handleStandClick}>
+        <Button className={!dealStage || (!splitActive && score> 21) || isBlackjack? "opacity-0 cursor-default":''} secondary rounded onClick={handleStandClick}>
           Stand
         </Button>
-        <Button className={evaluateStage || (!splitActive && score> 21)? "opacity-0 cursor-default":''} secondary rounded onClick={handleDoubleClick}>
+        <Button className={!dealStage || (!splitActive && score> 21)|| isBlackjack? "opacity-0 cursor-default":''} secondary rounded onClick={handleDoubleClick}>
           Double
         </Button>
-        <Button className={evaluateStage|| (!splitActive && score> 21) ||(splitActive)? "opacity-0 cursor-default":''} secondary rounded onClick={handleSplitClick}>
+        <Button className={!dealStage || (!splitActive && score> 21) ||(splitActive)|| isBlackjack ? "opacity-0 cursor-default":''} secondary rounded onClick={handleSplitClick}>
           Split
         </Button>
 
