@@ -26,7 +26,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   const classes = classNames(
     customClassName,
-    'flex items-center px-3 py-1.5 border grow',
+    'flex items-center px-3 py-1.5 border grow text-xl font-bold hover:shadow-lg transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50',
     {
       'border-blue-500 bg-blue-500 text-white': primary,
       'border-gray-900 bg-gray-500 text-white': secondary,

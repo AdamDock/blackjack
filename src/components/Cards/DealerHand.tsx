@@ -11,13 +11,13 @@ const DealerHand = ()=>{
    
     return (
         <>
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
                 {betStage? 
 
                     <>
                         <Card code={"back"}/>
                         <Card code={"back"}/>
-                        <h1>DealerScore:</h1>
+                            <h1 className="ml-10 text-xl font-bold">DealerScore:</h1>
                     </>
 
                 : 
@@ -27,14 +27,14 @@ const DealerHand = ()=>{
                     <>
                         <Card code={"back"}/>
                         <Card code={`${hand[1].code}`}/>
-                        <h1>DealerScore: {hand[1].value}</h1>
+                        <h1 className="ml-10 text-xl font-bold">DealerScore: {hand[1].value}</h1>
                     </>
 
                 :
                 
                     <>
                         {renderedHand}
-                        <h1>DealerScore: {dealerScore}</h1>
+                        <h1 className="ml-10 text-xl font-bold">DealerScore: {dealerScore}</h1>
                     </>
              }
             </div>

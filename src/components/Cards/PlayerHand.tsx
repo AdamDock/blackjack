@@ -17,33 +17,36 @@ const PlayerHand = ()=>{
 
         {!betStage && !(hand2.length > 0) ?
           <>
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               {renderedHand}
-              <h2>PlayerScore: {score} </h2>
+              <h2 className="ml-10 text-xl font-bold">PlayerScore: {score} </h2>
             </div>
           </> 
         : 
         !betStage && splitActive ?
           <>
-            <div>
-                <div className="flex justify-between">
+          <div className="flex">
+            <div className="flex">
+                <div className="flex items-center justify-center">
                   {renderedHand}
+                <h2 className="m-10 text-xl font-bold">Hand 1 Score: {score} </h2>
                 </div>
-                <h2>Hand 1 Score: {score} </h2>
             </div>
             <div>
-              <div className="flex justify-between">
+              <div className="flex items-center justify-center">
                 {renderedHand2}
+              
+              <h2 className="m-10 text-xl font-bold">Hand 2 Score: {score2} </h2>
               </div>
-              <h2>Hand 2 Score: {score2} </h2>
             </div>
+          </div>
           </> 
         :
           <>
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center">
               <Card code={"back"} />
               <Card code={"back"} />
-              <h2>PlayerScore: {score} </h2>
+              <h2 className="ml-10 text-xl font-bold">PlayerScore: {score===0? <></>:score} </h2>
             </div>
           </>
 }

@@ -45,15 +45,15 @@ const handleResetClick = () => {
     <>
       <div className="flex">
         <button onClick={handleResetClick}>
-          <h4>Reset</h4>
+          <h4 className='m-5 font-bold'>Reset</h4>
         </button>
         {renderChips()}
         <Chip onClick={handleChipClick} amount={stack} color={"Gold"} />
         <div className='flex flex-col'>
-          <div>
+          <div className='mt-10 text-xl font-bold'>
             {!splitActive?<h2>Pot: {pot}</h2>:<><h2>Pot: {pot}</h2><h2>Pot2: {pot2}</h2></>}
           </div>
-          <div>
+          <div className="m-10 text-xl font-bold">
             <h2>Stack: {stack}</h2>
           </div>
          

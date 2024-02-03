@@ -4,12 +4,14 @@ import PlayerHand from "./PlayerHand";
  const CardsList = ()=>{
     return (
         <>
-          <div className="flex justify-center">
+        <div className="items-center mb-20">
+          <div className="flex justify-center m-5">
             <DealerHand />
           </div>
-          <div className="flex justify-center">
+          <div className="flex justify-center  m-5">
             <PlayerHand />
           </div>
+        </div>
         </>
     )
 }

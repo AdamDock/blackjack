@@ -77,8 +77,6 @@ const Table = () => {
         </div>
 
         </div>
-      
-
     </Modal>
   );
 
@@ -115,7 +113,7 @@ const Table = () => {
         {showModal && modal}
         {showModal2 && modal2}
 
-        <Header />
+        <Header/>
         <CardsList />
         <ChoiceList />
         <ChipsList />
