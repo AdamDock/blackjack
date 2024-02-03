@@ -34,18 +34,11 @@ const gameSlice = createSlice({
         },
         setScore: (state, action) => {
             state.gameScore += action.payload;
-            console.log("gamescore: ", state.gameScore);
         },
         setSplitActive: (state, action) => {
             state.splitActive = action.payload;
-            state.hand2deal = action.payload;
         },
-        setTextOutcome: (state, action) => {
-            if(action.payload[0] === "hand1"){
-                state.textOutcome = action.payload[1];
-            } else if(action.payload[0] === "hand2"){
-                state.textOutcome2 = action.payload[1];
-            }
+        setTextOutcome: (state, action) => {           
             state.textOutcome = action.payload;
         },
         setDealerTurnComplete: (state, action) => {

@@ -3,6 +3,17 @@ import Chip from "./Chip";
 import { useDispatch, useSelector } from "react-redux";
 import { addChips, resetChips } from "../../store/index";
 
+const chips = [
+  {amount: 1, color: "Red"},
+  {amount: 5, color: "Orange"},
+  {amount: 10, color: "Yellow"},
+  {amount: 25, color: "Blue"},
+  {amount: 50, color: "Pink"},
+  {amount: 100, color: "slategray"},
+  {amount: 500, color: "aqua"},
+  {amount: 1000, color: "Silver"}
+];
+
 const ChipsList = () => {
   const dispatch = useDispatch();
   const { splitActive } = useSelector((state: any) => state.game);
@@ -16,6 +27,19 @@ const handleResetClick = () => {
   const handleChipClick = (amount: number) => {
     dispatch({ type: "chips/addChips", payload: amount });
   }
+  const renderChips = () => {
+    return chips.map((chip, index) => {
+      return (
+        <div key={index}>
+          <Chip
+            amount={chip.amount}
+            color={chip.color}
+            onClick={handleChipClick}
+          />
+        </div>
+      );
+    });
+  };
 
   return (
     <>
@@ -23,15 +47,8 @@ const handleResetClick = () => {
         <button onClick={handleResetClick}>
           <h4>Reset</h4>
         </button>
-        <Chip onClick={handleChipClick} amount={1} color={"Red"} />
-        <Chip onClick={handleChipClick} amount={5} color={"green"} />
-        <Chip onClick={handleChipClick} amount={10} color={"Yellow"} />
-        <Chip onClick={handleChipClick} amount={25} color={"blue"} />
-        <Chip onClick={handleChipClick} amount={50} color={"pink"} />
-        <Chip onClick={handleChipClick} amount={100} color={"Purple"} />
-        <Chip onClick={handleChipClick} amount={500} color={"white"} />
-        <Chip onClick={handleChipClick} amount={1000} color={"black"} />
-        <Chip onClick={handleChipClick} amount={stack} color={"yellow"} />
+        {renderChips()}
+        <Chip onClick={handleChipClick} amount={stack} color={"Gold"} />
         <div className='flex flex-col'>
           <div>
             {!splitActive?<h2>Pot: {pot}</h2>:<><h2>Pot: {pot}</h2><h2>Pot2: {pot2}</h2></>}
@@ -46,5 +63,5 @@ const handleResetClick = () => {
     </>
   )
 }
-
 export default ChipsList;
+

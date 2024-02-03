@@ -44,13 +44,14 @@ const chipsSlice = createSlice({
                 state.pot2 = 0;
             }
         },
-        doubleChips: (state) => {
-            state.stack -= state.pot;
-            state.pot += state.pot;
-        },
-        doubleChips2: (state) => {
-            state.stack -= state.pot2;
-            state.pot2 += state.pot2;
+        doubleChips: (state, action) => {
+            if(action.payload === "hand1"){
+                state.stack -= state.pot;
+                state.pot += state.pot;
+            } else if(action.payload === "hand2"){
+                state.stack -= state.pot2;
+                state.pot2 += state.pot2;
+            }
         },
         splitChips: (state) => {
             state.pot2 = state.pot;

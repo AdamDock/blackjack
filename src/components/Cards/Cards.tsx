@@ -3,9 +3,6 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({code})=>{
-
-    
-
     return (
         <>
           <img
